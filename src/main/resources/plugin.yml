@@ -16,6 +16,8 @@ commands:
     aliases: [ vda, villageadmin ]
 
 permissions:
+  villagedefense.join.*:
+    default: true
   villagedefense.admin.*:
     default: op
     children:
