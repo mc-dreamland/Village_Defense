@@ -35,9 +35,11 @@ import plugily.projects.minigamesbox.classic.utils.helper.ItemUtils;
 import plugily.projects.minigamesbox.classic.utils.misc.complement.ComplementAccessor;
 import plugily.projects.minigamesbox.classic.utils.serialization.LocationSerializer;
 import plugily.projects.minigamesbox.inventory.normal.NormalFastInv;
+import plugily.projects.minigamesbox.number.NumberUtils;
 import plugily.projects.villagedefense.Main;
 import plugily.projects.villagedefense.arena.Arena;
 
+import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -132,11 +134,11 @@ public class ShopManager {
       String costString = "";
       ItemMeta meta = itemStack.getItemMeta();
       //seek for item price
-      if(meta != null && meta.hasLore()) {
+      if (meta != null && meta.hasLore()) {
         String currency = new MessageBuilder("IN_GAME_MESSAGES_VILLAGE_SHOP_CURRENCY").asKey().build();
-        for (String s : ComplementAccessor.getComplement().getLore(meta)) {
+        for (String s : meta.getLore()) {
           if (s.contains(currency) || s.contains("orbs")) {
-            costString = ChatColor.stripColor(s).replace(currency, "");
+            costString = ChatColor.stripColor(s).replaceAll(ChatColor.stripColor(currency), "").trim();
             break;
           }
         }
