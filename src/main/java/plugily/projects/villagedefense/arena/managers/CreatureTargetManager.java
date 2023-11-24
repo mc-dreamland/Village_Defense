@@ -163,14 +163,14 @@ public class CreatureTargetManager {
   }
 
   public void unTargetPlayerFromZombies(Player player, Arena arena) {
-    for(Creature zombie : arena.getEnemies()) {
+    for (Creature zombie : arena.getEnemies()) {
       LivingEntity target = zombie.getTarget();
 
       if(!player.equals(target)) {
         continue;
       }
       //set new target as villager so zombies won't stay still waiting for nothing
-      zombie.setTarget(arena.getVillagers().get(plugin.getRandom().nextInt(arena.getVillagers().size() - 1)));
+      zombie.setTarget(arena.getVillagers().get(plugin.getRandom().nextInt(arena.getVillagers().size())));
     }
   }
 

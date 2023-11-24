@@ -4,3 +4,5 @@
 /target/
 /mvn/
 /minecraft/
+/.gradle/
+/build/

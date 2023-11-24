@@ -274,16 +274,14 @@ public class Arena extends PluginArena {
       return false;
     }
     int globalEntityLimit = 0;
-    int entityLimit = 0;
+    int entityLimit = 10;
     String spawnedName = "";
     switch(type) {
       case WOLF:
-        entityLimit = plugin.getPermissionsManager().getPermissionCategoryValue("PLAYER_SPAWN_LIMIT_WOLVES", player);
         spawnedName = new MessageBuilder("IN_GAME_MESSAGES_VILLAGE_WAVE_ENTITIES_WOLF_NAME").asKey().player(player).build();
         globalEntityLimit = plugin.getConfig().getInt("Limit.Spawn.Wolves", 20);
         break;
       case IRON_GOLEM:
-        entityLimit = plugin.getPermissionsManager().getPermissionCategoryValue("PLAYER_SPAWN_LIMIT_GOLEMS", player);
         spawnedName = new MessageBuilder("IN_GAME_MESSAGES_VILLAGE_WAVE_ENTITIES_GOLEM_NAME").asKey().player(player).build();
         globalEntityLimit = plugin.getConfig().getInt("Limit.Spawn.Golems", 15);
         break;

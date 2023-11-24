@@ -80,11 +80,12 @@ public class ArenaRegistry extends PluginArenaRegistry {
       }
     }
 
-    ConfigurationSection doorSection = section.getConfigurationSection(id + ".doors");
-    if(doorSection != null) {
-      for(String string : doorSection.getKeys(false)) {
-        ((Arena) arena).getMapRestorerManager().addDoor(LocationSerializer.getLocation(doorSection.getString(string + ".location")),
-            (byte) doorSection.getInt(string + ".byte"));
+    List<String> doorSection = section.getStringList(id + ".doors");
+    if(doorSection.isEmpty()) {
+      plugin.getDebugger().sendConsoleMsg(new MessageBuilder("VALIDATOR_INVALID_ARENA_CONFIGURATION").asKey().value("DOORS").arena(arena).build());
+    } else {
+      for(String string : doorSection) {
+        ((Arena) arena).getMapRestorerManager().addDoor(LocationSerializer.getLocation(string), (byte) 0);
       }
     }
 
