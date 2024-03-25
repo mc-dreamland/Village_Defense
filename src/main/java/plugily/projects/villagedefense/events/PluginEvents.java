@@ -97,7 +97,6 @@ public class PluginEvents implements Listener {
 
     amount += (amount * (orbsBoost / 100));
 
-    amount += event.getAmount();
     user.adjustStatistic(plugin.getStatsStorage().getStatisticType("ORBS"), event.getAmount());
 
     new MessageBuilder("IN_GAME_MESSAGES_VILLAGE_WAVE_ORBS_PICKUP").asKey().integer(amount).player(player).sendPlayer();

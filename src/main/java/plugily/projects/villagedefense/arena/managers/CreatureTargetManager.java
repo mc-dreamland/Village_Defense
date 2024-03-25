@@ -170,7 +170,7 @@ public class CreatureTargetManager {
         continue;
       }
       //set new target as villager so zombies won't stay still waiting for nothing
-      zombie.setTarget(arena.getVillagers().get(plugin.getRandom().nextInt(arena.getVillagers().size() - 1)));
+      zombie.setTarget(arena.getVillagers().get(plugin.getRandom().nextInt(arena.getVillagers().size())));
     }
   }
 
