@@ -28,6 +28,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionType;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.PremiumKit;
@@ -73,11 +74,13 @@ public class NakedKit extends PremiumKit implements Listener {
 
   @Override
   public void giveKitItems(Player player) {
-    ItemStack itemStack = new ItemStack(getMaterial());
-    itemStack.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 6);
-    itemStack.addUnsafeEnchantment(Enchantment.DAMAGE_UNDEAD, 2);
-    itemStack.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
-    player.getInventory().addItem(itemStack);
+    ItemStack weaponItem = new ItemStack(getMaterial());
+    ItemMeta itemMeta = weaponItem.getItemMeta();
+    itemMeta.setUnbreakable(true);
+    weaponItem.setItemMeta(itemMeta);
+    weaponItem.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 2);
+    weaponItem.addUnsafeEnchantment(Enchantment.DAMAGE_UNDEAD, 6);
+    player.getInventory().addItem(weaponItem);
     player.getInventory().addItem(new ItemStack(Material.SADDLE));
   }
 

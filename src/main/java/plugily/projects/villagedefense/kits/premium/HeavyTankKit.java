@@ -22,6 +22,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.PremiumKit;
 import plugily.projects.minigamesbox.classic.utils.helper.ArmorHelper;
@@ -51,7 +52,11 @@ public class HeavyTankKit extends PremiumKit {
 
   @Override
   public void giveKitItems(Player player) {
-    player.getInventory().addItem(WeaponHelper.getEnchanted(new ItemStack(Material.STICK), new Enchantment[]{Enchantment.DURABILITY, Enchantment.DAMAGE_ALL}, new int[]{10, 2}));
+    ItemStack enchantedWeapon = WeaponHelper.getEnchanted(new ItemStack(Material.STICK), new Enchantment[]{Enchantment.DAMAGE_ALL}, new int[]{10});
+    ItemMeta itemMeta = enchantedWeapon.getItemMeta();
+    itemMeta.setUnbreakable(true);
+    enchantedWeapon.setItemMeta(itemMeta);
+    player.getInventory().addItem(enchantedWeapon);
     player.getInventory().addItem(new ItemStack(XMaterial.COOKED_PORKCHOP.parseMaterial(), 8));
     VersionUtils.setMaxHealth(player, 40.0);
     player.setHealth(40.0);

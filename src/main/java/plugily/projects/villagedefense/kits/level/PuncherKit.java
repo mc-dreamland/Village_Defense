@@ -23,6 +23,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.LevelKit;
 import plugily.projects.minigamesbox.classic.utils.helper.ArmorHelper;
@@ -52,8 +53,12 @@ public class PuncherKit extends LevelKit {
 
   @Override
   public void giveKitItems(Player player) {
-    player.getInventory().addItem(WeaponHelper.getEnchanted(XMaterial.DIAMOND_SHOVEL.parseItem(), new Enchantment[]{
-        Enchantment.DURABILITY, Enchantment.KNOCKBACK, Enchantment.DAMAGE_ALL}, new int[]{10, 5, 2}));
+    ItemStack enchantedWeapon = WeaponHelper.getEnchanted(XMaterial.DIAMOND_SHOVEL.parseItem(), new Enchantment[]{
+            Enchantment.KNOCKBACK, Enchantment.DAMAGE_ALL}, new int[]{5, 2});
+    ItemMeta itemMeta = enchantedWeapon.getItemMeta();
+    itemMeta.setUnbreakable(true);
+    enchantedWeapon.setItemMeta(itemMeta);
+    player.getInventory().addItem(enchantedWeapon);
     ArmorHelper.setColouredArmor(Color.BLACK, player);
     player.getInventory().addItem(WeaponHelper.getEnchantedBow(Enchantment.DURABILITY, 5));
     player.getInventory().addItem(new ItemStack(Material.ARROW, 25));

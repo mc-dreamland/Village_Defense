@@ -25,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
@@ -64,7 +65,11 @@ public class ZombieFinderKit extends LevelKit implements Listener {
 
   @Override
   public void giveKitItems(Player player) {
-    player.getInventory().addItem(WeaponHelper.getUnBreakingSword(WeaponHelper.ResourceType.WOOD, 10));
+    ItemStack weaponItem = new ItemStack(XMaterial.WOODEN_SWORD.parseMaterial());
+    ItemMeta itemMeta = weaponItem.getItemMeta();
+    itemMeta.setUnbreakable(true);
+    weaponItem.setItemMeta(itemMeta);
+    player.getInventory().addItem(weaponItem);
     player.getInventory().addItem(new ItemStack(XMaterial.COOKED_PORKCHOP.parseMaterial(), 8));
     player.getInventory().addItem(new ItemBuilder(WeaponHelper.getEnchanted(new ItemStack(Material.BOOK), new Enchantment[]{Enchantment.DAMAGE_ALL}, new int[]{1}))
         .name(new MessageBuilder("KIT_CONTENT_ZOMBIE_TELEPORTER_GAME_ITEM_NAME").asKey().build())

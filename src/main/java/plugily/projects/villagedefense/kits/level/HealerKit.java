@@ -22,6 +22,7 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionType;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.LevelKit;
@@ -53,7 +54,11 @@ public class HealerKit extends LevelKit {
 
   @Override
   public void giveKitItems(Player player) {
-    player.getInventory().addItem(WeaponHelper.getUnBreakingSword(WeaponHelper.ResourceType.WOOD, 10));
+    ItemStack weaponItem = new ItemStack(XMaterial.WOODEN_SWORD.parseMaterial());
+    ItemMeta itemMeta = weaponItem.getItemMeta();
+    itemMeta.setUnbreakable(true);
+    weaponItem.setItemMeta(itemMeta);
+    player.getInventory().addItem(weaponItem);
     ArmorHelper.setColouredArmor(Color.WHITE, player);
     player.getInventory().addItem(new ItemStack(XMaterial.COOKED_PORKCHOP.parseMaterial(), 8));
     player.getInventory().addItem(VersionUtils.getPotion(PotionType.INSTANT_HEAL, 2, true));

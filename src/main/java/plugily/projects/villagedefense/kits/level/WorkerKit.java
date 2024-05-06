@@ -27,6 +27,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.LevelKit;
 import plugily.projects.minigamesbox.classic.utils.helper.ArmorHelper;
@@ -61,8 +62,18 @@ public class WorkerKit extends LevelKit implements Listener {
   @Override
   public void giveKitItems(Player player) {
     ArmorHelper.setColouredArmor(Color.PURPLE, player);
-    player.getInventory().addItem(WeaponHelper.getUnBreakingSword(WeaponHelper.ResourceType.WOOD, 10));
-    player.getInventory().addItem(WeaponHelper.getEnchantedBow(Enchantment.DURABILITY, 10));
+    ItemStack weaponItem = new ItemStack(XMaterial.WOODEN_SWORD.parseMaterial());
+    ItemMeta itemMeta = weaponItem.getItemMeta();
+    itemMeta.setUnbreakable(true);
+    weaponItem.setItemMeta(itemMeta);
+    player.getInventory().addItem(weaponItem);
+
+    ItemStack bowItem = new ItemStack(XMaterial.BOW.parseMaterial());
+    ItemMeta bowItemItemMeta = bowItem.getItemMeta();
+    itemMeta.setUnbreakable(true);
+    bowItem.setItemMeta(bowItemItemMeta);
+    player.getInventory().addItem(bowItem);
+
     player.getInventory().addItem(new ItemStack(XMaterial.ARROW.parseMaterial(), 64));
     player.getInventory().addItem(new ItemStack(XMaterial.COOKED_BEEF.parseMaterial(), 10));
     player.getInventory().addItem(new ItemStack(getMaterial(), 2));

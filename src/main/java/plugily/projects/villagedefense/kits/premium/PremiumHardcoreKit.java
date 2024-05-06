@@ -22,6 +22,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.PremiumKit;
 import plugily.projects.minigamesbox.classic.utils.helper.WeaponHelper;
@@ -49,8 +50,12 @@ public class PremiumHardcoreKit extends PremiumKit {
 
   @Override
   public void giveKitItems(Player player) {
-    player.getInventory().addItem(WeaponHelper.getEnchanted(new ItemStack(getMaterial()),
-        new Enchantment[]{Enchantment.DAMAGE_ALL}, new int[]{11}));
+    ItemStack weaponEnchanted = WeaponHelper.getEnchanted(new ItemStack(getMaterial()),
+            new Enchantment[]{Enchantment.DAMAGE_ALL}, new int[]{33});
+    ItemMeta itemMeta = weaponEnchanted.getItemMeta();
+    itemMeta.setUnbreakable(true);
+    weaponEnchanted.setItemMeta(itemMeta);
+    player.getInventory().addItem(weaponEnchanted);
     VersionUtils.setMaxHealth(player, 6);
     player.getInventory().addItem(new ItemStack(Material.SADDLE));
   }

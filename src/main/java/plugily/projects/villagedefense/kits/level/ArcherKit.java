@@ -23,10 +23,12 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.LevelKit;
 import plugily.projects.minigamesbox.classic.utils.helper.ArmorHelper;
 import plugily.projects.minigamesbox.classic.utils.helper.WeaponHelper;
+import plugily.projects.minigamesbox.classic.utils.version.xseries.XMaterial;
 
 import java.util.List;
 
@@ -52,8 +54,19 @@ public class ArcherKit extends LevelKit {
   @Override
   public void giveKitItems(Player player) {
     ArmorHelper.setColouredArmor(Color.GREEN, player);
-    player.getInventory().addItem(WeaponHelper.getUnBreakingSword(WeaponHelper.ResourceType.WOOD, 10));
-    player.getInventory().addItem(WeaponHelper.getEnchantedBow(Enchantment.DURABILITY, 10));
+    ItemStack weaponItem = new ItemStack(XMaterial.WOODEN_SWORD.parseMaterial());
+    ItemMeta itemMeta = weaponItem.getItemMeta();
+    itemMeta.setUnbreakable(true);
+    weaponItem.setItemMeta(itemMeta);
+    player.getInventory().addItem(weaponItem);
+
+
+    ItemStack bowItem = new ItemStack(XMaterial.BOW.parseMaterial());
+    ItemMeta bowItemItemMeta = bowItem.getItemMeta();
+    itemMeta.setUnbreakable(true);
+    bowItem.setItemMeta(bowItemItemMeta);
+    player.getInventory().addItem(bowItem);
+
     player.getInventory().addItem(new ItemStack(Material.ARROW, 64));
     player.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 10));
   }

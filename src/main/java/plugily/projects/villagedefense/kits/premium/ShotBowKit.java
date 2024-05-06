@@ -60,7 +60,8 @@ public class ShotBowKit extends PremiumKit implements Listener {
 
   @Override
   public void giveKitItems(Player player) {
-    player.getInventory().addItem(WeaponHelper.getEnchantedBow(new Enchantment[]{Enchantment.DURABILITY, Enchantment.ARROW_KNOCKBACK}, new int[]{10, 1}));
+    ItemStack weaponEnchanted = WeaponHelper.getEnchantedBow(new Enchantment[]{Enchantment.ARROW_DAMAGE, Enchantment.ARROW_FIRE}, new int[]{5, 1});
+    player.getInventory().addItem(weaponEnchanted);
     player.getInventory().addItem(new ItemStack(getMaterial(), 64));
     player.getInventory().addItem(new ItemStack(getMaterial(), 64));
     ArmorHelper.setColouredArmor(Color.YELLOW, player);

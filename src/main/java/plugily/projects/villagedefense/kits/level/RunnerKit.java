@@ -23,6 +23,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
@@ -54,8 +55,12 @@ public class RunnerKit extends LevelKit {
 
   @Override
   public void giveKitItems(Player player) {
-    player.getInventory().addItem(WeaponHelper.getEnchanted(new ItemStack(Material.STICK), new Enchantment[]{
-        Enchantment.KNOCKBACK, Enchantment.DAMAGE_UNDEAD, Enchantment.DURABILITY}, new int[]{2, 1, 10}));
+    ItemStack enchantedWeapon = WeaponHelper.getEnchanted(new ItemStack(Material.STICK), new Enchantment[]{
+            Enchantment.KNOCKBACK, Enchantment.DAMAGE_UNDEAD}, new int[]{2, 1});
+    ItemMeta itemMeta = enchantedWeapon.getItemMeta();
+    itemMeta.setUnbreakable(true);
+    enchantedWeapon.setItemMeta(itemMeta);
+    player.getInventory().addItem(enchantedWeapon);
     ArmorHelper.setColouredArmor(Color.BLUE, player);
     player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2));
     player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 1));

@@ -22,12 +22,14 @@ import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import plugily.projects.minigamesbox.classic.arena.PluginArena;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
@@ -66,7 +68,12 @@ public class BlockerKit extends PremiumKit implements Listener {
   @Override
   public void giveKitItems(Player player) {
     ArmorHelper.setColouredArmor(Color.RED, player);
-    player.getInventory().addItem(WeaponHelper.getEnchanted(new ItemStack(Material.STONE_SWORD), new org.bukkit.enchantments.Enchantment[]{org.bukkit.enchantments.Enchantment.DURABILITY}, new int[]{10}));
+    ItemStack weaponItem = new ItemStack(XMaterial.STONE_SWORD.parseMaterial());
+    ItemMeta itemMeta = weaponItem.getItemMeta();
+    itemMeta.setUnbreakable(true);
+    weaponItem.setItemMeta(itemMeta);
+    weaponItem.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 5);
+    player.getInventory().addItem(weaponItem);
     player.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 10));
     player.getInventory().addItem(new ItemBuilder(new ItemStack(XMaterial.OAK_FENCE.parseMaterial(), 3))
         .name(new MessageBuilder("KIT_CONTENT_BLOCKER_GAME_ITEM_NAME").asKey().build())
@@ -147,7 +154,7 @@ public class BlockerKit extends PremiumKit implements Listener {
 
   private static class ZombieBarrier {
     private Location location;
-    private int seconds = 10;
+    private int seconds = 60;
 
     void setLocation(Location location) {
       this.location = location;

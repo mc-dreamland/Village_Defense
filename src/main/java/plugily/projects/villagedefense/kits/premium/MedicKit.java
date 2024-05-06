@@ -20,6 +20,7 @@ package plugily.projects.villagedefense.kits.premium;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -27,6 +28,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionType;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.PremiumKit;
@@ -59,7 +61,12 @@ public class MedicKit extends PremiumKit implements Listener {
 
   @Override
   public void giveKitItems(Player player) {
-    player.getInventory().addItem(WeaponHelper.getUnBreakingSword(WeaponHelper.ResourceType.STONE, 10));
+    ItemStack weaponItem = new ItemStack(XMaterial.STONE_SWORD.parseMaterial());
+    ItemMeta itemMeta = weaponItem.getItemMeta();
+    itemMeta.setUnbreakable(true);
+    weaponItem.setItemMeta(itemMeta);
+    weaponItem.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 5);
+    player.getInventory().addItem(weaponItem);
     ArmorHelper.setColouredArmor(Color.WHITE, player);
     player.getInventory().addItem(new ItemStack(XMaterial.COOKED_PORKCHOP.parseMaterial(), 8));
     player.getInventory().addItem(VersionUtils.getPotion(PotionType.REGEN, 1, true));
@@ -72,7 +79,12 @@ public class MedicKit extends PremiumKit implements Listener {
 
   @Override
   public void reStock(Player player) {
-    //no restock items for this kit
+    for(int i = 0; i < 2; i++) {
+      player.getInventory().addItem(VersionUtils.getPotion(PotionType.INSTANT_HEAL, 2, true));
+    }
+    for(int i = 0; i < 2; i++) {
+      player.getInventory().addItem(VersionUtils.getPotion(PotionType.REGEN, 2, true));
+    }
   }
 
   @EventHandler

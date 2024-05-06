@@ -80,7 +80,7 @@ public class CustomCreatureEvents implements Listener {
         }
         ItemStack itemStack = customCreature.getDropItem();
         event.getDrops().add(itemStack);
-        event.setDroppedExp(Math.min(customCreature.getExpDrop(), 32767);
+        event.setDroppedExp(Math.min(customCreature.getExpDrop(), 32767));
       }
     }
   }

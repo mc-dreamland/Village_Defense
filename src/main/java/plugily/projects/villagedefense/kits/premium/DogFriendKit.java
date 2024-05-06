@@ -19,8 +19,10 @@
 package plugily.projects.villagedefense.kits.premium;
 
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.PremiumKit;
 import plugily.projects.minigamesbox.classic.utils.helper.ArmorHelper;
@@ -50,7 +52,12 @@ public class DogFriendKit extends PremiumKit {
 
   @Override
   public void giveKitItems(Player player) {
-    player.getInventory().addItem(WeaponHelper.getUnBreakingSword(WeaponHelper.ResourceType.STONE, 10));
+    ItemStack weaponItem = new ItemStack(XMaterial.STONE_SWORD.parseMaterial());
+    ItemMeta itemMeta = weaponItem.getItemMeta();
+    itemMeta.setUnbreakable(true);
+    weaponItem.setItemMeta(itemMeta);
+    weaponItem.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 5);
+    player.getInventory().addItem(weaponItem);
     ArmorHelper.setArmor(player, ArmorHelper.ArmorType.LEATHER);
     player.getInventory().addItem(new ItemStack(XMaterial.COOKED_PORKCHOP.parseMaterial(), 8));
     player.getInventory().addItem(new ItemStack(Material.SADDLE));
