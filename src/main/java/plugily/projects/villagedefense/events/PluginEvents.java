@@ -162,13 +162,6 @@ public class PluginEvents implements Listener {
     }
   }
 
-  @EventHandler
-  public void onDrop(PlayerDropItemEvent event) {
-    if(plugin.getArenaRegistry().isInArena(event.getPlayer()) && event.getItemDrop().getItemStack().getType() == Material.SADDLE) {
-      event.setCancelled(true);
-    }
-  }
-
 
   @EventHandler
   public void onItemMove(InventoryClickEvent event) {

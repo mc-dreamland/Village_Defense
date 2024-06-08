@@ -350,9 +350,6 @@ public class ArenaEvents extends PluginArenaEvents {
     if(plugin.getUserManager().getUser(player).isSpectator()) {
       e.setCancelled(true);
     }
-    if (Material.SADDLE == e.getItem().getItemStack().getType()){
-      e.setCancelled(true);
-    }
     arena.removeDroppedFlesh(e.getItem());
   }
 
