@@ -49,6 +49,7 @@ import plugily.projects.minigamesbox.classic.utils.misc.complement.ComplementAcc
 import plugily.projects.minigamesbox.classic.utils.version.VersionUtils;
 import plugily.projects.minigamesbox.classic.utils.version.events.api.PlugilyEntityPickupItemEvent;
 import plugily.projects.villagedefense.Main;
+import plugily.projects.villagedefense.utils.Utils;
 
 import java.util.Arrays;
 
@@ -225,18 +226,10 @@ public class ArenaEvents extends PluginArenaEvents {
     }
 
     final Player player = e.getEntity();
-    PlayerInventory inventory = player.getInventory();
+    ItemStack[] fullInventoryItems = Utils.getFullInventory(player);
 
-    ItemStack[] armorContents = inventory.getArmorContents();
-    ItemStack[] storageContents = inventory.getStorageContents();
-
-    for (ItemStack item : armorContents){
-      if(item != null) {
-        player.getWorld().dropItemNaturally(player.getLocation(), item);
-      }
-    }
-    for(ItemStack item : storageContents) {
-      if(item != null) {
+    for (ItemStack item : fullInventoryItems){
+      if(item != null && Material.AIR != item.getType() && item.getType().isItem()) {
         player.getWorld().dropItemNaturally(player.getLocation(), item);
       }
     }
@@ -256,6 +249,7 @@ public class ArenaEvents extends PluginArenaEvents {
         return;
       }
 
+      PlayerInventory inventory = player.getInventory();
       if(arena.getArenaState() == ArenaState.ENDING || arena.getArenaState() == ArenaState.RESTARTING) {
         inventory.clear();
         player.setFlying(false);

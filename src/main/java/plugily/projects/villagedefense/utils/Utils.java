@@ -20,6 +20,9 @@ package plugily.projects.villagedefense.utils;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import plugily.projects.minigamesbox.classic.utils.helper.MaterialUtils;
 import plugily.projects.minigamesbox.classic.utils.version.xseries.XMaterial;
 
@@ -29,6 +32,33 @@ import plugily.projects.minigamesbox.classic.utils.version.xseries.XMaterial;
 public class Utils {
 
   private Utils() {
+  }
+
+  public static ItemStack[] getFullInventory(Player player) {
+    PlayerInventory inventory = player.getInventory();
+
+    // 获取主要库存内容（不包括盔甲和副手）
+    ItemStack[] mainInventory = inventory.getContents();
+
+    // 获取盔甲栏内容
+    ItemStack[] armorContents = inventory.getArmorContents();
+
+    // 获取副手内容
+    ItemStack offHandItem = inventory.getItemInOffHand();
+
+    // 创建一个数组来保存所有的物品
+    ItemStack[] fullInventory = new ItemStack[mainInventory.length + armorContents.length + 1];
+
+    // 将主要库存内容复制到新数组
+    System.arraycopy(mainInventory, 0, fullInventory, 0, mainInventory.length);
+
+    // 将盔甲内容复制到新数组
+    System.arraycopy(armorContents, 0, fullInventory, mainInventory.length, armorContents.length);
+
+    // 将副手物品添加到新数组的最后一个位置
+    fullInventory[fullInventory.length - 1] = offHandItem;
+
+    return fullInventory;
   }
 
   public static Material getCachedDoor(Block block) {
