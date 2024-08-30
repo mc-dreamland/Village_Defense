@@ -226,9 +226,8 @@ public class ArenaEvents extends PluginArenaEvents {
     }
 
     final Player player = e.getEntity();
-    ItemStack[] fullInventoryItems = Utils.getFullInventory(player);
 
-    for (ItemStack item : fullInventoryItems){
+    for (ItemStack item : player.getInventory().getContents()){
       if(item != null && Material.AIR != item.getType() && item.getType().isItem()) {
         player.getWorld().dropItemNaturally(player.getLocation(), item);
       }
