@@ -133,55 +133,6 @@ public class ArenaEvents extends PluginArenaEvents {
   }
 
   @EventHandler
-  public void onEntityDamage(EntityDamageEvent event) {
-    if(event.getEntityType() != EntityType.IRON_GOLEM && event.getEntityType() != EntityType.WOLF)
-      return;
-
-    for(Arena arena : plugin.getArenaRegistry().getPluginArenas()) {
-      switch(event.getEntityType()) {
-        case IRON_GOLEM:
-          if(!arena.getIronGolems().contains(event.getEntity())) {
-            continue;
-          }
-
-          IronGolem ironGolem = (IronGolem) event.getEntity();
-
-          if(ironGolem.getHealth() <= event.getDamage()) {
-            event.setCancelled(true);
-            event.setDamage(0);
-            arena.removeIronGolem(ironGolem);
-          }
-          return;
-        case WOLF:
-          if(!arena.getWolves().contains(event.getEntity())) {
-            continue;
-          }
-
-          Wolf wolf = (Wolf) event.getEntity();
-
-          if(wolf.getHealth() <= event.getDamage()) {
-            event.setCancelled(true);
-            event.setDamage(0);
-
-            java.util.UUID ownerUUID = (wolf.getOwner() != null) ? wolf.getOwner().getUniqueId() : null;
-
-            if(ownerUUID != null) {
-              Player playerOwner = plugin.getServer().getPlayer(ownerUUID);
-
-              if(playerOwner != null)
-                new MessageBuilder("IN_GAME_MESSAGES_VILLAGE_WAVE_ENTITIES_WOLF_DEATH").asKey().player(playerOwner).sendPlayer();
-            }
-
-            arena.removeWolf(wolf);
-          }
-          return;
-        default:
-          return;
-      }
-    }
-  }
-
-  @EventHandler
   public void onDieEntity(EntityDeathEvent event) {
     LivingEntity entity = event.getEntity();
     if(!(entity instanceof Creature)) {
@@ -197,6 +148,26 @@ public class ArenaEvents extends PluginArenaEvents {
         plugin.getRewardsHandler().performReward(null, arena, plugin.getRewardsHandler().getRewardType("VILLAGER_DEATH"));
         plugin.getHolidayManager().applyHolidayDeathEffects(entity);
         new MessageBuilder("IN_GAME_MESSAGES_VILLAGE_VILLAGER_DIED").asKey().arena(arena).sendArena();
+      } else if (event.getEntityType() == EntityType.IRON_GOLEM) {
+        IronGolem ironGolem = (IronGolem) event.getEntity();
+        if(!arena.getIronGolems().contains(entity)) {
+          continue;
+        }
+        arena.removeIronGolem(ironGolem);
+      } else if (event.getEntityType() == EntityType.WOLF) {
+        if(!arena.getWolves().contains(entity)) {
+          continue;
+        }
+        Wolf wolf = (Wolf) event.getEntity();
+        arena.removeWolf(wolf);
+        java.util.UUID ownerUUID = (wolf.getOwner() != null) ? wolf.getOwner().getUniqueId() : null;
+
+        if(ownerUUID != null) {
+          Player playerOwner = plugin.getServer().getPlayer(ownerUUID);
+
+          if(playerOwner != null)
+            new MessageBuilder("IN_GAME_MESSAGES_VILLAGE_WAVE_ENTITIES_WOLF_DEATH").asKey().player(playerOwner).sendPlayer();
+        }
       } else {
         if(!arena.getEnemies().contains(entity)) {
           continue;
