@@ -24,14 +24,15 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.IronGolem;
+import org.bukkit.entity.Wolf;
 import org.bukkit.material.Door;
 import plugily.projects.minigamesbox.classic.arena.managers.PluginMapRestorerManager;
 import plugily.projects.minigamesbox.classic.utils.version.xseries.XMaterial;
 import plugily.projects.villagedefense.arena.Arena;
 import plugily.projects.villagedefense.utils.Utils;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -72,7 +73,7 @@ public class MapRestorerManager extends PluginMapRestorerManager {
 
   public final void clearEnemiesFromArena() {
     arena.getEnemySpawnManager().applyIdle(0);
-    arena.getEnemies().forEach(org.bukkit.entity.Creature::remove);
+    arena.getEnemies().forEach(Entity::remove);
     arena.getEnemies().clear();
   }
 
@@ -85,18 +86,18 @@ public class MapRestorerManager extends PluginMapRestorerManager {
   }
 
   public final void clearGolemsFromArena() {
-    arena.getIronGolems().forEach(org.bukkit.entity.IronGolem::remove);
-    arena.getIronGolems().clear();
+    List<IronGolem> ironGolems = new ArrayList<>(arena.getIronGolems());
+    ironGolems.forEach(arena::removeIronGolem);
   }
 
   public final void clearVillagersFromArena() {
-    arena.getVillagers().forEach(org.bukkit.entity.Villager::remove);
+    arena.getVillagers().forEach(Entity::remove);
     arena.getVillagers().clear();
   }
 
   public final void clearWolvesFromArena() {
-    arena.getWolves().forEach(org.bukkit.entity.Wolf::remove);
-    arena.getWolves().clear();
+    List<Wolf> wolves = new ArrayList<>(arena.getWolves());
+    wolves.forEach(arena::removeWolf);
   }
 
   public void restoreDoors() {
