@@ -20,7 +20,6 @@ package plugily.projects.villagedefense.kits.level;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -31,8 +30,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.kits.basekits.LevelKit;
 import plugily.projects.minigamesbox.classic.utils.helper.ArmorHelper;
-import plugily.projects.minigamesbox.classic.utils.helper.WeaponHelper;
-import plugily.projects.minigamesbox.classic.utils.version.VersionUtils;
 import plugily.projects.minigamesbox.classic.utils.version.xseries.XMaterial;
 import plugily.projects.villagedefense.arena.Arena;
 import plugily.projects.villagedefense.utils.Utils;
@@ -91,22 +88,23 @@ public class WorkerKit extends LevelKit implements Listener {
 
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onDoorPlace(BlockPlaceEvent event) {
-    Arena arena = (Arena) getPlugin().getArenaRegistry().getArena(event.getPlayer());
+    Player player = event.getPlayer();
+    Arena arena = (Arena) getPlugin().getArenaRegistry().getArena(player);
     if(arena == null) {
       return;
     }
-    if(getPlugin().getUserManager().getUser(event.getPlayer()).isSpectator() || !arena.getMapRestorerManager().getGameDoorLocations()
+    if(getPlugin().getUserManager().getUser(player).isSpectator() || !arena.getMapRestorerManager().getGameDoorLocations()
         .containsKey(event.getBlock().getLocation())) {
       event.setCancelled(true);
       return;
     }
-    if(VersionUtils.getItemInHand(event.getPlayer()).getType() != Utils.getCachedDoor(event.getBlock())) {
+    if(Utils.getCachedDoor(event.getBlock()) != event.getItemInHand().getType()) {
       event.setCancelled(true);
       return;
     }
     //to override world guard protection
     event.setCancelled(false);
-    new MessageBuilder("KIT_CONTENT_WORKER_GAME_ITEM_CHAT").asKey().player(event.getPlayer()).sendPlayer();
+    new MessageBuilder("KIT_CONTENT_WORKER_GAME_ITEM_CHAT").asKey().player(player).sendPlayer();
   }
 
 }

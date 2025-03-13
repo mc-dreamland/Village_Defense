@@ -212,7 +212,6 @@ public class ArenaEvents extends PluginArenaEvents {
     e.getDrops().clear();
     e.setDroppedExp(0);
     plugin.getHolidayManager().applyHolidayDeathEffects(player);
-    player.spigot().respawn();
     plugin.getServer().getScheduler().runTask(plugin, () -> {
       if(arena.getArenaState() == ArenaState.STARTING) {
         VersionUtils.teleport(player, arena.getStartLocation());
