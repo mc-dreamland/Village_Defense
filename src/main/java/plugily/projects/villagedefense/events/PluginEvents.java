@@ -223,7 +223,7 @@ public class PluginEvents implements Listener {
         continue;
       }
       Creature creature = (Creature) event.getEntity();
-      creature.setCustomName(String.format("%.2f％ §4♡", creature.getHealth()/ VersionUtils.getMaxHealth(creature)));
+      creature.setCustomName(String.format("%.2f％ §4❤", creature.getHealth() / VersionUtils.getMaxHealth(creature) * 100.0D));
     }
   }
 

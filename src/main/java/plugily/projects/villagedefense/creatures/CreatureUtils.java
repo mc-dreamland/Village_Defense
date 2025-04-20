@@ -108,16 +108,16 @@ public class CreatureUtils {
    * Applies attributes (i.e. health bar (if enabled),
    * health multiplier and follow range) to target zombie.
    *
-   * @param zombie zombie to apply attributes for
+   * @param creature zombie to apply attributes for
    * @param arena  arena to get health multiplier from
    */
-  public static void applyAttributes(Creature zombie, Arena arena) {
-    creatureInitializer.applyFollowRange(zombie);
-    VersionUtils.setMaxHealth(zombie, VersionUtils.getMaxHealth(zombie) + arena.getArenaOption("ZOMBIE_DIFFICULTY_MULTIPLIER"));
-    zombie.setHealth(VersionUtils.getMaxHealth(zombie));
+  public static void applyAttributes(Creature creature, Arena arena) {
+    creatureInitializer.applyFollowRange(creature);
+    VersionUtils.setMaxHealth(creature, VersionUtils.getMaxHealth(creature) + arena.getArenaOption("ZOMBIE_DIFFICULTY_MULTIPLIER"));
+    creature.setHealth(VersionUtils.getMaxHealth(creature));
     if(plugin.getConfigPreferences().getOption("ZOMBIE_HEALTHBAR")) {
-      zombie.setCustomNameVisible(true);
-      zombie.setCustomName(String.format("%.2f％ §4♡", zombie.getHealth()/ VersionUtils.getMaxHealth(zombie)));
+      creature.setCustomNameVisible(true);
+      creature.setCustomName(String.format("%.2f％ §4❤", creature.getHealth() / VersionUtils.getMaxHealth(creature) * 100.0D));
     }
   }
 
