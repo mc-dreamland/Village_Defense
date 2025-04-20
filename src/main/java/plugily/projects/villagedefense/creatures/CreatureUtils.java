@@ -18,7 +18,6 @@
 
 package plugily.projects.villagedefense.creatures;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.IronGolem;
@@ -28,7 +27,6 @@ import org.bukkit.entity.Wolf;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.utils.version.ServerVersion;
 import plugily.projects.minigamesbox.classic.utils.version.VersionUtils;
-import plugily.projects.minigamesbox.string.StringFormatUtils;
 import plugily.projects.villagedefense.Main;
 import plugily.projects.villagedefense.arena.Arena;
 
@@ -119,8 +117,7 @@ public class CreatureUtils {
     zombie.setHealth(VersionUtils.getMaxHealth(zombie));
     if(plugin.getConfigPreferences().getOption("ZOMBIE_HEALTHBAR")) {
       zombie.setCustomNameVisible(true);
-      zombie.setCustomName(StringFormatUtils.getProgressBar((int) zombie.getHealth(), (int) VersionUtils.getMaxHealth(zombie), 50, "|",
-          ChatColor.YELLOW + "", ChatColor.GRAY + ""));
+      zombie.setCustomName(String.format("%.2f％ §4♡", zombie.getHealth()/ VersionUtils.getMaxHealth(zombie)));
     }
   }
 

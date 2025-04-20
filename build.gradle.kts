@@ -29,7 +29,13 @@ repositories {
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://oss.sonatype.org/content/repositories/central")
     maven(uri("https://papermc.io/repo/repository/maven-public/"))
-    maven(uri("https://nexus.bjd-mc.com:8443/repository/maven-releases/"))
+    maven{
+        url = uri("https://nexus.bjd-mc.com:8443/repository/maven-releases/")
+        credentials {
+            username = System.getenv("MAVEN_USERNAME")
+            password = System.getenv("MAVEN_PASSWORD")
+        }
+    }
     maven(uri("https://repo.citizensnpcs.co/"))
     maven(uri("https://repo.maven.apache.org/maven2/"))
 }
@@ -37,7 +43,7 @@ repositories {
 
 
 dependencies {
-    implementation("plugily.projects:MiniGamesBox-Classic:1.3.3:SNAPSHOT3") { isTransitive = false }
+    implementation("plugily.projects:MiniGamesBox-Classic:1.3.3:TEST11") { isTransitive = false }
     compileOnly("org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT")
     compileOnly("org.jetbrains:annotations:24.0.1")
     compileOnly(files("lib/spigot/1.8.8-R0.1.jar"))
