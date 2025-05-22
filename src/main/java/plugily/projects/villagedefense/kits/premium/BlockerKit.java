@@ -28,6 +28,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -97,11 +98,7 @@ public class BlockerKit extends PremiumKit implements Listener {
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
-  public void onBarrierPlace(PlugilyPlayerInteractEvent event) {
-    if(event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-      return;
-    }
-
+  public void onBarrierPlace(BlockPlaceEvent event) {
     Player player = event.getPlayer();
     Arena arena = (Arena) getPlugin().getArenaRegistry().getArena(player);
     if(arena == null)
@@ -115,17 +112,12 @@ public class BlockerKit extends PremiumKit implements Listener {
     if(!(getPlugin().getUserManager().getUser(player).getKit() instanceof BlockerKit)) {
       return;
     }
-    Block block = null;
-    for(Block blocks : player.getLastTwoTargetBlocks(null, 5)) {
-      if(blocks.getType() == Material.AIR) {
-        block = blocks;
-      }
-    }
+    Block block = event.getBlock();
     if(block == null) {
       new MessageBuilder("KIT_CONTENT_BLOCKER_PLACE_FAIL").asKey().player(player).sendPlayer();
       return;
     }
-    getPlugin().getBukkitHelper().takeOneItem(player, stack);
+//    getPlugin().getBukkitHelper().takeOneItem(player, stack);
     event.setCancelled(false);
 
     new MessageBuilder("KIT_CONTENT_BLOCKER_PLACE_SUCCESS").asKey().player(player).sendPlayer();
