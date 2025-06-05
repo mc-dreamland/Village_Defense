@@ -49,6 +49,8 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import plugily.projects.minigamesbox.classic.arena.ArenaState;
 import plugily.projects.minigamesbox.classic.handlers.language.MessageBuilder;
 import plugily.projects.minigamesbox.classic.user.User;
@@ -59,12 +61,15 @@ import plugily.projects.villagedefense.api.event.game.VillageGameSecretWellEvent
 import plugily.projects.villagedefense.arena.Arena;
 import plugily.projects.villagedefense.utils.Utils;
 
+import java.util.Random;
+
 /**
  * Created by Tom on 16/08/2014.
  */
 public class PluginEvents implements Listener {
 
   private final Main plugin;
+  private final PotionEffectType[] effects = PotionEffectType.values();
 
   public PluginEvents(Main plugin) {
     this.plugin = plugin;
@@ -298,24 +303,25 @@ public class PluginEvents implements Listener {
       return;
     }
 
-    if(itemStack.getType() == Material.ROTTEN_FLESH) {
-      for(Entity entity : plugin.getBukkitHelper().getNearbyEntities(location, 20)) {
-        if(!(entity instanceof Player)) {
-          continue;
-        }
+    for(Entity entity : plugin.getBukkitHelper().getNearbyEntities(location, 20)) {
+      if(entity instanceof Player dropPlayer) {
         Arena arena = plugin.getArenaRegistry().getArena((Player) entity);
         if(arena == null) {
           continue;
         }
-        arena.changeArenaOptionBy("ROTTEN_FLESH_AMOUNT", itemStack.getAmount());
         VersionUtils.sendParticles("CLOUD", arena.getPlayers(), location, 50, 2, 2, 2);
-        if(!arena.checkLevelUpRottenFlesh() || arena.getArenaOption("ROTTEN_FLESH_LEVEL") >= 30) {
-          return;
+        if (itemStack.getType() == Material.ROTTEN_FLESH){
+          arena.changeArenaOptionBy("ROTTEN_FLESH_AMOUNT", itemStack.getAmount());
+          for(Player player : arena.getPlayers()) {
+            VersionUtils.setMaxHealth(player, Math.min(VersionUtils.getMaxHealth(player) + (0.05 * itemStack.getAmount()), 120D));
+            new MessageBuilder("IN_GAME_MESSAGES_VILLAGE_ROTTEN_FLESH_LEVEL_UP").asKey().player(player).sendPlayer();
+          }
+        } else {
+          // add: 丢弃其他物品随机获得任意效果
+          dropPlayer.addPotionEffect(new PotionEffect(effects[new Random().nextInt(effects.length)], itemStack.getAmount() * 20, 0));
+          new MessageBuilder("IN_GAME_MESSAGES_VILLAGE_FEEL_REFRESHED").asKey().player(dropPlayer).sendPlayer();
         }
-        for(Player player : arena.getPlayers()) {
-          VersionUtils.setMaxHealth(player, VersionUtils.getMaxHealth(player) + 2.0);
-          new MessageBuilder("IN_GAME_MESSAGES_VILLAGE_ROTTEN_FLESH_LEVEL_UP").asKey().player(player).sendPlayer();
-        }
+        break;
       }
     }
   }
