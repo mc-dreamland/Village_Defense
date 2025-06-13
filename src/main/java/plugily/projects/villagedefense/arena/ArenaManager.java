@@ -19,6 +19,7 @@
 package plugily.projects.villagedefense.arena;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -60,6 +61,10 @@ public class ArenaManager extends PluginArenaManager {
     if(plugin.getUserManager().getUser(player).getKit() instanceof GolemFriendKit) {
       ((Arena) arena).getIronGolems().stream().filter(ironGolem -> ironGolem.getCustomName().contains(player.getName()))
           .forEach(IronGolem::remove);
+    }
+    Entity vehicle = player.getVehicle();
+    if (vehicle != null){
+      vehicle.eject();
     }
     super.leaveAttempt(player, arena);
   }
