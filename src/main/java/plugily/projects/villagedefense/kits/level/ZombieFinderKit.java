@@ -18,6 +18,7 @@
 
 package plugily.projects.villagedefense.kits.level;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Creature;
@@ -89,12 +90,13 @@ public class ZombieFinderKit extends LevelKit implements Listener {
 
   @EventHandler
   public void onTeleport(PlugilyPlayerInteractEvent event) {
-    Arena arena = (Arena) getPlugin().getArenaRegistry().getArena(event.getPlayer());
+    Player player = event.getPlayer();
+    Arena arena = (Arena) getPlugin().getArenaRegistry().getArena(player);
     if(arena == null || !ItemUtils.isItemStackNamed(event.getItem()) || event.getItem().getType() != Material.BOOK
         || !ComplementAccessor.getComplement().getDisplayName(event.getItem().getItemMeta()).equals(new MessageBuilder("KIT_CONTENT_ZOMBIE_TELEPORTER_GAME_ITEM_GUI").asKey().build())) {
       return;
     }
-    User user = getPlugin().getUserManager().getUser(event.getPlayer());
+    User user = getPlugin().getUserManager().getUser(player);
     if(user.isSpectator()) {
       new MessageBuilder("IN_GAME_SPECTATOR_SPECTATOR_WARNING").asKey().player(user.getPlayer()).sendPlayer();
       return;
@@ -111,12 +113,17 @@ public class ZombieFinderKit extends LevelKit implements Listener {
       new MessageBuilder("KIT_CONTENT_ZOMBIE_TELEPORTER_TELEPORT_NOT_FOUND").asKey().player(user.getPlayer()).sendPlayer();
       return;
     }
+    Location location = player.getLocation();
+    if(arena.getVillagers().stream().anyMatch(villager -> location.distanceSquared(villager.getLocation()) < 100)) {
+      new MessageBuilder("KIT_CONTENT_ZOMBIE_TELEPORTER_TELEPORT_NOT_FOUND").asKey().player(user.getPlayer()).sendPlayer();
+      return;
+    }
 
     Creature creature = arena.getEnemies().get(arena.getEnemies().size() == 1 ? 0 : getPlugin().getRandom().nextInt(arena.getEnemies().size()));
-    VersionUtils.teleport(creature, event.getPlayer().getLocation());
+    VersionUtils.teleport(creature, location);
     creature.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20 * 30, 0));
     new MessageBuilder("KIT_CONTENT_ZOMBIE_TELEPORTER_TELEPORT_ZOMBIE").asKey().player(user.getPlayer()).sendPlayer();
-    VersionUtils.playSound(event.getPlayer().getLocation(), "ENTITY_ZOMBIE_DEATH");
+    VersionUtils.playSound(location, "ENTITY_ZOMBIE_DEATH");
     user.setCooldown("zombie", getKitsConfig().getInt("Kit-Cooldown.Zombie-Finder", 30));
   }
 }
