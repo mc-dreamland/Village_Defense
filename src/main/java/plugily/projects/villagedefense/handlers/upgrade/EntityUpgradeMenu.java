@@ -128,7 +128,7 @@ public class EntityUpgradeMenu {
           return;
         }
 
-        int orbs = user.getStatistic("ORBS");
+        long orbs = user.getStatistic("ORBS");
         if(orbs < cost) {
           player.sendMessage(color("UPGRADE_MENU_CANNOT_AFFORD"));
           return;

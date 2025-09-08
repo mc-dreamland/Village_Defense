@@ -296,7 +296,7 @@ public class ArenaEvents extends PluginArenaEvents {
 
   private void modifyUserOrbs(User user) {
     int deathValue = plugin.getConfig().getInt("Orbs.Death.Value", 50);
-    int current = user.getStatistic("ORBS");
+    long current = user.getStatistic("ORBS");
     switch(getOrbDeathType()) {
       case KEEP:
         return;

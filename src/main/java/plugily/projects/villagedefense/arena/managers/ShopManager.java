@@ -159,7 +159,7 @@ public class ShopManager {
         }
 
         User user = plugin.getUserManager().getUser(player);
-        int orbs = user.getStatistic("ORBS");
+        long orbs = user.getStatistic("ORBS");
 
         if(cost > orbs) {
           new MessageBuilder("IN_GAME_MESSAGES_VILLAGE_SHOP_NOT_ENOUGH_CURRENCY").asKey().player(player).sendPlayer();

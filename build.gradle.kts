@@ -43,7 +43,7 @@ repositories {
 
 
 dependencies {
-    implementation("plugily.projects:MiniGamesBox-Classic:1.3.3:TEST11") { isTransitive = false }
+    implementation("plugily.projects:minigamebox-classic:1.3.2-R3") { isTransitive = false }
     compileOnly("org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT")
     compileOnly("org.jetbrains:annotations:24.0.1")
     compileOnly(files("lib/spigot/1.8.8-R0.1.jar"))
