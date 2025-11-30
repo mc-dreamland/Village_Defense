@@ -73,6 +73,7 @@ public class MapRestorerManager extends PluginMapRestorerManager {
 
   public final void clearEnemiesFromArena() {
     arena.getEnemySpawnManager().applyIdle(0);
+    arena.getEnemySpawnManager().getEnemyCheckerLocations().clear();
     arena.getEnemies().forEach(Entity::remove);
     arena.getEnemies().clear();
   }
