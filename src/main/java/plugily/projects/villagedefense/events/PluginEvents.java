@@ -42,6 +42,7 @@ import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -76,17 +77,16 @@ public class PluginEvents implements Listener {
     plugin.getServer().getPluginManager().registerEvents(this, plugin);
   }
 
-
   @EventHandler
   public void onItemPickup(PlayerExpChangeEvent event) {
     Player player = event.getPlayer();
     Arena arena = plugin.getArenaRegistry().getArena(player);
-    if(arena == null) {
+    if (arena == null) {
       return;
     }
 
     User user = plugin.getUserManager().getUser(player);
-    if(user.isSpectator()) {
+    if (user.isSpectator()) {
       event.setAmount(0);
       return;
     }
@@ -104,50 +104,52 @@ public class PluginEvents implements Listener {
     new MessageBuilder("IN_GAME_MESSAGES_VILLAGE_WAVE_ORBS_PICKUP").asKey().integer(amount).player(player).sendPlayer();
   }
 
-
   @EventHandler
   public void onEntityInteractEntity(PlugilyPlayerInteractEntityEvent event) {
-    if(VersionUtils.checkOffHand(event.getHand())) {
+    if (VersionUtils.checkOffHand(event.getHand())) {
       return;
     }
 
     Arena arena = plugin.getArenaRegistry().getArena(event.getPlayer());
-    if(arena == null) {
+    if (arena == null) {
       return;
     }
 
-    if(plugin.getUserManager().getUser(event.getPlayer()).isSpectator()) {
+    if (plugin.getUserManager().getUser(event.getPlayer()).isSpectator()) {
       event.setCancelled(true);
       return;
     }
-    if(VersionUtils.getItemInHand(event.getPlayer()).getType() == Material.SADDLE) {
-      if(event.getRightClicked().getType() == EntityType.IRON_GOLEM || event.getRightClicked().getType() == EntityType.VILLAGER || event.getRightClicked().getType() == EntityType.WOLF) {
+    if (VersionUtils.getItemInHand(event.getPlayer()).getType() == Material.SADDLE) {
+      if (event.getRightClicked().getType() == EntityType.IRON_GOLEM
+          || event.getRightClicked().getType() == EntityType.VILLAGER
+          || event.getRightClicked().getType() == EntityType.WOLF) {
         VersionUtils.setPassenger(event.getRightClicked(), event.getPlayer());
         event.setCancelled(true);
         return;
       }
     }
-    if(event.getRightClicked().getType() == EntityType.VILLAGER) {
+    if (event.getRightClicked().getType() == EntityType.VILLAGER) {
       event.setCancelled(true);
       arena.getShopManager().openShop(event.getPlayer());
-    } else if(event.getRightClicked().getType() == EntityType.IRON_GOLEM) {
-      if(event.getPlayer().isSneaking()) {
+    } else if (event.getRightClicked().getType() == EntityType.IRON_GOLEM) {
+      if (event.getPlayer().isSneaking()) {
         return;
       }
       IronGolem ironGolem = (IronGolem) event.getRightClicked();
-      if(ironGolem.getCustomName() != null && ironGolem.getCustomName().contains(event.getPlayer().getName())) {
+      if (ironGolem.getCustomName() != null && ironGolem.getCustomName().contains(event.getPlayer().getName())) {
         VersionUtils.setPassenger(event.getRightClicked(), event.getPlayer());
       } else {
-        new MessageBuilder("IN_GAME_MESSAGES_VILLAGE_WAVE_ENTITIES_GOLEM_CANT_RIDE_OTHER").asKey().player(event.getPlayer()).sendPlayer();
+        new MessageBuilder("IN_GAME_MESSAGES_VILLAGE_WAVE_ENTITIES_GOLEM_CANT_RIDE_OTHER").asKey()
+            .player(event.getPlayer()).sendPlayer();
       }
-    } else if(event.getRightClicked().getType() == EntityType.WOLF) {
+    } else if (event.getRightClicked().getType() == EntityType.WOLF) {
       Wolf wolf = (Wolf) event.getRightClicked();
       Bukkit.getScheduler().runTask(plugin, () -> wolf.setSitting(false));
-      if(event.getPlayer().isSneaking()) {
+      if (event.getPlayer().isSneaking()) {
         return;
       }
-      //to prevent wolves sitting
-      if(wolf.getCustomName() != null && wolf.getCustomName().contains(event.getPlayer().getName())) {
+      // to prevent wolves sitting
+      if (wolf.getCustomName() != null && wolf.getCustomName().contains(event.getPlayer().getName())) {
         VersionUtils.setPassenger(event.getRightClicked(), event.getPlayer());
       }
     }
@@ -155,22 +157,23 @@ public class PluginEvents implements Listener {
 
   @EventHandler
   public void onDoorDrop(ItemSpawnEvent event) {
-    if(event.getEntity().getItemStack().getType() == Utils.getCachedDoor(event.getLocation().getBlock())) {
-      for(Entity entity : plugin.getBukkitHelper().getNearbyEntities(event.getLocation(), 20)) {
-        if(entity instanceof Player && plugin.getArenaRegistry().getArena((Player) entity) != null) {
+    if (event.getEntity().getItemStack().getType() == Utils.getCachedDoor(event.getLocation().getBlock())) {
+      for (Entity entity : plugin.getBukkitHelper().getNearbyEntities(event.getLocation(), 20)) {
+        if (entity instanceof Player && plugin.getArenaRegistry().getArena((Player) entity) != null) {
           event.getEntity().remove();
         }
       }
     }
   }
 
-
   @EventHandler
   public void onItemMove(InventoryClickEvent event) {
-    if(event.getWhoClicked() instanceof Player && plugin.getArenaRegistry().isInArena((Player) event.getWhoClicked())) {
-      if(plugin.getArenaRegistry().getArena(((Player) event.getWhoClicked())).getArenaState() != ArenaState.IN_GAME) {
-        if(event.getClickedInventory() == event.getWhoClicked().getInventory()) {
-          if(event.getView().getType() == InventoryType.CRAFTING || event.getView().getType() == InventoryType.PLAYER) {
+    if (event.getWhoClicked() instanceof Player
+        && plugin.getArenaRegistry().isInArena((Player) event.getWhoClicked())) {
+      if (plugin.getArenaRegistry().getArena(((Player) event.getWhoClicked())).getArenaState() != ArenaState.IN_GAME) {
+        if (event.getClickedInventory() == event.getWhoClicked().getInventory()) {
+          if (event.getView().getType() == InventoryType.CRAFTING
+              || event.getView().getType() == InventoryType.PLAYER) {
             event.setResult(Event.Result.DENY);
           }
         }
@@ -178,24 +181,25 @@ public class PluginEvents implements Listener {
     }
   }
 
-
   @EventHandler
   public void onEntityCombust(EntityCombustByEntityEvent event) {
-    if(!(event.getCombuster() instanceof Projectile)) {
+    if (!(event.getCombuster() instanceof Projectile)) {
       return;
     }
     Projectile projectile = (Projectile) event.getCombuster();
-    if(!(projectile.getShooter() instanceof Player)) {
+    if (!(projectile.getShooter() instanceof Player)) {
       return;
     }
-    if(event.getEntity() instanceof Player) {
+    if (event.getEntity() instanceof Player) {
       Arena arena = plugin.getArenaRegistry().getArena((Player) projectile.getShooter());
-      if(arena != null && arena.equals(plugin.getArenaRegistry().getArena((Player) event.getEntity()))) {
+      if (arena != null && arena.equals(plugin.getArenaRegistry().getArena((Player) event.getEntity()))) {
         event.setCancelled(true);
       }
-    } else if(event.getEntity() instanceof IronGolem || event.getEntity() instanceof Villager || event.getEntity() instanceof Wolf) {
-      for(Arena a : plugin.getArenaRegistry().getPluginArenas()) {
-        if(a.getWolves().contains(event.getEntity()) || a.getVillagers().contains(event.getEntity()) || a.getIronGolems().contains(event.getEntity())) {
+    } else if (event.getEntity() instanceof IronGolem || event.getEntity() instanceof Villager
+        || event.getEntity() instanceof Wolf) {
+      for (Arena a : plugin.getArenaRegistry().getPluginArenas()) {
+        if (a.getWolves().contains(event.getEntity()) || a.getVillagers().contains(event.getEntity())
+            || a.getIronGolems().contains(event.getEntity())) {
           event.setCancelled(true);
           return;
         }
@@ -205,44 +209,65 @@ public class PluginEvents implements Listener {
 
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onFriendHurt(EntityDamageByEntityEvent event) {
-    if(!(event.getDamager() instanceof Player) || plugin.getArenaRegistry().getArena((Player) event.getDamager()) == null) {
-      return;
+    Entity damager = event.getDamager();
+    Entity entity = event.getEntity();
+
+    if (damager instanceof Player) {
+      Player player = (Player) damager;
+      if (plugin.getArenaRegistry().getArena(player) == null) {
+        return;
+      }
+      if (plugin.getUserManager().getUser(player).isSpectator()) {
+        event.setCancelled(true);
+        return;
+      }
+      if (entity instanceof Player || entity instanceof Wolf || entity instanceof IronGolem
+          || entity instanceof Villager) {
+        event.setCancelled(true);
+      }
+    } else if (damager instanceof Wolf || damager instanceof IronGolem) {
+      if (entity instanceof Villager) {
+        event.setCancelled(true);
+        if (damager instanceof Creature) {
+          ((Creature) damager).setTarget(null);
+        }
+      }
     }
-    if(plugin.getUserManager().getUser((Player) event.getDamager()).isSpectator()) {
-      event.setCancelled(true);
-      return;
+  }
+
+  @EventHandler
+  public void onWolfTargetVillager(EntityTargetEvent event) {
+    if (event.getEntity() instanceof Wolf || event.getEntity() instanceof IronGolem) {
+      if (event.getTarget() instanceof Villager) {
+        event.setCancelled(true);
+      }
     }
-    if(!(event.getEntity() instanceof Player || event.getEntity() instanceof Wolf || event.getEntity() instanceof IronGolem || event.getEntity() instanceof Villager)) {
-      return;
-    }
-    event.setCancelled(true);
   }
 
   @EventHandler(priority = EventPriority.HIGH)
   public void onCreatureHurt(EntityDamageEvent event) {
-    if(!(event.getEntity() instanceof Creature) || !plugin.getConfigPreferences().getOption("ZOMBIE_HEALTHBAR")) {
+    if (!(event.getEntity() instanceof Creature) || !plugin.getConfigPreferences().getOption("ZOMBIE_HEALTHBAR")) {
       return;
     }
-    for(Arena arena : plugin.getArenaRegistry().getPluginArenas()) {
-      if(!arena.getEnemies().contains(event.getEntity())) {
-        continue;
-      }
+    for (Arena arena : plugin.getArenaRegistry().getPluginArenas()) {
       Creature creature = (Creature) event.getEntity();
-      creature.setCustomName(String.format("%.2f％ §4❤", creature.getHealth() / VersionUtils.getMaxHealth(creature) * 100.0D));
+      creature.setCustomName(
+          String.format("%.1f/%.1f §4❤", creature.getHealth(), VersionUtils.getMaxHealth(creature)));
     }
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onSecond(EntityDamageByEntityEvent event) {
-    if(!(event.getDamager() instanceof Projectile)) {
+    if (!(event.getDamager() instanceof Projectile)) {
       return;
     }
     Projectile projectile = (Projectile) event.getDamager();
-    if(!(projectile.getShooter() instanceof Player)) {
+    if (!(projectile.getShooter() instanceof Player)) {
       return;
     }
-    if(plugin.getArenaRegistry().getArena((Player) projectile.getShooter()) == null || !(event.getEntity() instanceof Player || event.getEntity() instanceof Wolf
-        || event.getEntity() instanceof IronGolem || event.getEntity() instanceof Villager)) {
+    if (plugin.getArenaRegistry().getArena((Player) projectile.getShooter()) == null
+        || !(event.getEntity() instanceof Player || event.getEntity() instanceof Wolf
+            || event.getEntity() instanceof IronGolem || event.getEntity() instanceof Villager)) {
       return;
     }
     event.setCancelled(true);
@@ -250,30 +275,29 @@ public class PluginEvents implements Listener {
 
   @EventHandler
   public void onEntityLeash(PlayerLeashEntityEvent event) {
-    if(event.getEntity() instanceof Villager) {
+    if (event.getEntity() instanceof Villager) {
       ((Villager) event.getEntity()).setLeashHolder(event.getPlayer());
     }
   }
 
-
   @EventHandler(priority = EventPriority.HIGH)
   public void onBlockBreakEvent(BlockBreakEvent event) {
-    if(plugin.getArenaRegistry().isInArena(event.getPlayer())) {
+    if (plugin.getArenaRegistry().isInArena(event.getPlayer())) {
       event.setCancelled(true);
     }
   }
 
   @EventHandler(priority = EventPriority.HIGH)
   public void onBuild(BlockPlaceEvent event) {
-    if(plugin.getArenaRegistry().isInArena(event.getPlayer()) && event.getBlock().getType() != Utils.getCachedDoor(event.getBlock())) {
+    if (plugin.getArenaRegistry().isInArena(event.getPlayer())
+        && event.getBlock().getType() != Utils.getCachedDoor(event.getBlock())) {
       event.setCancelled(true);
     }
   }
 
-
   @EventHandler
   public void onSecretWellDrop(InventoryPickupItemEvent event) {
-    if(event.getInventory().getType() != InventoryType.HOPPER) {
+    if (event.getInventory().getType() != InventoryType.HOPPER) {
       return;
     }
 
@@ -281,8 +305,8 @@ public class PluginEvents implements Listener {
     Location location = item.getLocation();
 
     Arena currentArena = null;
-    for(Arena arena : plugin.getArenaRegistry().getPluginArenas()) {
-      if(location.getWorld() == arena.getStartLocation().getWorld()) {
+    for (Arena arena : plugin.getArenaRegistry().getPluginArenas()) {
+      if (location.getWorld() == arena.getStartLocation().getWorld()) {
         currentArena = arena;
         item.remove();
         event.setCancelled(true);
@@ -291,34 +315,37 @@ public class PluginEvents implements Listener {
       }
     }
 
-    if(currentArena == null) {
+    if (currentArena == null) {
       return;
     }
 
     ItemStack itemStack = item.getItemStack();
 
-    VillageGameSecretWellEvent villageGameSecretWellEvent = new VillageGameSecretWellEvent(currentArena, itemStack, location);
+    VillageGameSecretWellEvent villageGameSecretWellEvent = new VillageGameSecretWellEvent(currentArena, itemStack,
+        location);
     Bukkit.getPluginManager().callEvent(villageGameSecretWellEvent);
-    if(villageGameSecretWellEvent.isCancelled()) {
+    if (villageGameSecretWellEvent.isCancelled()) {
       return;
     }
 
-    for(Entity entity : plugin.getBukkitHelper().getNearbyEntities(location, 20)) {
-      if(entity instanceof Player dropPlayer) {
+    for (Entity entity : plugin.getBukkitHelper().getNearbyEntities(location, 20)) {
+      if (entity instanceof Player dropPlayer) {
         Arena arena = plugin.getArenaRegistry().getArena((Player) entity);
-        if(arena == null) {
+        if (arena == null) {
           continue;
         }
         VersionUtils.sendParticles("CLOUD", arena.getPlayers(), location, 50, 2, 2, 2);
-        if (itemStack.getType() == Material.ROTTEN_FLESH){
+        if (itemStack.getType() == Material.ROTTEN_FLESH) {
           arena.changeArenaOptionBy("ROTTEN_FLESH_AMOUNT", itemStack.getAmount());
-          for(Player player : arena.getPlayers()) {
-            VersionUtils.setMaxHealth(player, Math.min(VersionUtils.getMaxHealth(player) + (0.05 * itemStack.getAmount()), 120D));
+          for (Player player : arena.getPlayers()) {
+            VersionUtils.setMaxHealth(player,
+                Math.min(VersionUtils.getMaxHealth(player) + (0.05 * itemStack.getAmount()), 120D));
             new MessageBuilder("IN_GAME_MESSAGES_VILLAGE_ROTTEN_FLESH_LEVEL_UP").asKey().player(player).sendPlayer();
           }
         } else {
           // add: 丢弃其他物品随机获得任意效果
-          dropPlayer.addPotionEffect(new PotionEffect(effects[new Random().nextInt(effects.length)], itemStack.getAmount() * 20, 0));
+          dropPlayer.addPotionEffect(
+              new PotionEffect(effects[new Random().nextInt(effects.length)], itemStack.getAmount() * 20, 0));
           new MessageBuilder("IN_GAME_MESSAGES_VILLAGE_FEEL_REFRESHED").asKey().player(dropPlayer).sendPlayer();
         }
         break;
@@ -333,19 +360,18 @@ public class PluginEvents implements Listener {
   @EventHandler(ignoreCancelled = true)
   public void onCombust(EntityCombustEvent event) {
     // Ignore if this is caused by an event lower down the chain.
-    if(event instanceof EntityCombustByEntityEvent || event instanceof EntityCombustByBlockEvent
+    if (event instanceof EntityCombustByEntityEvent || event instanceof EntityCombustByBlockEvent
         || !(event.getEntity() instanceof Creature)
         || event.getEntity().getWorld().getEnvironment() != World.Environment.NORMAL) {
       return;
     }
 
-    for(Arena arena : plugin.getArenaRegistry().getPluginArenas()) {
-      if(arena.getEnemies().contains(event.getEntity())) {
+    for (Arena arena : plugin.getArenaRegistry().getPluginArenas()) {
+      if (arena.getEnemies().contains(event.getEntity())) {
         event.setCancelled(true);
         break;
       }
     }
   }
-
 
 }
